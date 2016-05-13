@@ -19,14 +19,24 @@ sudo -u $USER chown -R bitnami /opt/bitnami/apps/$1
 
 # 3.- descargar y descomprimir processwire
 cd /opt/bitnami/apps/$1/htdocs
-wget https://github.com/ryancramerdesign/ProcessWire/archive/master.zip
+
+if [ -n "$3" ]
+then
+    echo "Descargando $3"
+    wget $3
+else 
+    echo "Descargando ProcessWire desde la web oficial"
+    wget https://github.com/ryancramerdesign/ProcessWire/archive/master.zip
+fi
+
 sudo unzip master.zip
 sudo mv ProcessWire-master/* ./
 sudo mv site-default site
+sudo rm -rf site-*
 # 3,5.- permisos para instalar 
 sudo chown bitnami:daemon -R /opt/bitnami/apps/$1/htdocs/*
-sudo chmod 777 -R ./site/assets /opt/bitnami/apps/$1/htdocs/site/modules
-sudo chmod 777 /opt/bitnami/apps/$1/htdocs/site/config.php
+sudo chmod 775 -R ./site/assets /opt/bitnami/apps/$1/htdocs/site/modules
+sudo chmod 775 /opt/bitnami/apps/$1/htdocs/site/config.php
 sudo mv /opt/bitnami/apps/$1/htdocs/htaccess.txt /opt/bitnami/apps/$1/htdocs/.htaccess
 
 # 3.- descomprimir zip de la app, sino exite crea un phpinfo como 
